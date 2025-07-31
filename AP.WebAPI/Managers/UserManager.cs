@@ -1,26 +1,27 @@
 using AP.BusinessInterfaces.Data.User;
+using AP.BusinessLogic.Services;
 
 namespace AP.WebAPI.Managers;
 
-public class UserManager:IManager<User>
+public class UserManager(UserService service) : IManager<User>
 {
     public Task<User> Get(Guid id)
     {
-        throw new NotImplementedException();
+        return service.Get(id);
     }
 
     public Task<User> Create(User value)
     {
-        throw new NotImplementedException();
+        return service.Create(value);
     }
 
     public Task<User> Update(Guid id, User value)
     {
-        throw new NotImplementedException();
+        return service.Update(id, value);
     }
 
-    public Task<User> Delete(Guid id)
+    public Task<bool> Delete(Guid id)
     {
-        throw new NotImplementedException();
+        return service.Delete(id);
     }
 }

@@ -1,3 +1,6 @@
+using AP.BusinessInterfaces.Data.User;
+using AP.BusinessLogic.Services;
+using AP.WebAPI.Managers;
 using Microsoft.OpenApi.Models;
 using static AP.BusinessInterfaces.Libs.Constants;
 
@@ -7,15 +10,21 @@ public static class ServiceCollectionExtension
 {
     public static void AddServices(this IServiceCollection services, IConfiguration configuration)
     {
-        
         AddSwagger(services);
-
+        AddInternalServices(services);
+        AddInternalManagers(services);
+        
         services.AddControllers();
     }
 
-    public static void AddInternalServices(this IServiceCollection services, IConfiguration configuration)
+    private static void AddInternalServices(this IServiceCollection services)
     {
-        
+        services.AddScoped<UserService>();
+    }
+
+    private static void AddInternalManagers(this IServiceCollection services)
+    {
+        services.AddScoped<UserManager>();
     }
 
     private static void AddSwagger(this IServiceCollection services)

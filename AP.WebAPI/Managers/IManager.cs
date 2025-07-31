@@ -7,5 +7,5 @@ public interface IManager<T>
     Task<T> Get(Guid id);
     Task<T> Create(T value);
     Task<T> Update(Guid id, T value);
-    Task<T> Delete(Guid id);
+    Task<bool> Delete(Guid id);
 }

@@ -13,9 +13,6 @@ Console.WriteLine($"Environment: {environment}");
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Get AWS secrets
-
-// Handle local environment connection string override
 if (environment == Local)
 {
     var connection = configuration.GetConnectionString("DefaultConnection")
