@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+      <ProjectReference Include="..\AP.BusinessInterfaces\AP.BusinessInterfaces.csproj" />
     </ItemGroup>
 
 </Project>

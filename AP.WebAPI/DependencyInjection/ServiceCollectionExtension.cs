@@ -13,6 +13,11 @@ public static class ServiceCollectionExtension
         services.AddControllers();
     }
 
+    public static void AddInternalServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        
+    }
+
     private static void AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(c =>
