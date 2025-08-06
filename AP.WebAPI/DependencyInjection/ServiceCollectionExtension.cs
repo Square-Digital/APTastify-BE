@@ -30,15 +30,63 @@ public static class ServiceCollectionExtension
         string access, string secret,
         bool development = false)
     {
-        var awsSecretsManager = new APSecretsManager(access, secret);
-        ;
-        var secrets = await GetAwsConfigurationSecrets(development, awsSecretsManager);
+        try
+        {
+            var awsSecretsManager = new APSecretsManager(access, secret);
+            var secrets = await GetAwsConfigurationSecrets(development, awsSecretsManager);
 
-        var serializedDbConnections = JsonSerializer.Deserialize<string>(secrets[Connection]);
-        var connection = string.IsNullOrWhiteSpace(serializedDbConnections) ? serializedDbConnections : string.Empty;
+            var configuration = new Dictionary<string, string?>();
 
+            ConfigureSettings(services, secrets, configuration);
 
-        return secrets;
+            return configuration;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to get AWS secrets: {ex.Message}");
+            Console.WriteLine("Falling back to local configuration...");
+            return new Dictionary<string, string?>();
+        }
+    }
+
+    private static void ConfigureSettings(this IServiceCollection services, Dictionary<string, string?> secrets,
+        Dictionary<string, string?> configuration)
+    {
+        if (secrets.TryGetValue(Connection, out var connection))
+        {
+            configuration["ConnectionStrings:DefaultConnection"] = connection;
+        }
+
+        // Map email settings to the proper configuration structure
+        if (secrets.TryGetValue(SmtpServer, out var server))
+        {
+            configuration["EmailSettings:SmtpServer"] = server;
+        }
+
+        if (secrets.TryGetValue(SmtpPort, out var port))
+        {
+            configuration["EmailSettings:SmtpPort"] = port;
+        }
+
+        if (secrets.TryGetValue(FromEmail, out var fromEmail))
+        {
+            configuration["EmailSettings:FromEmail"] = fromEmail;
+        }
+
+        if (secrets.TryGetValue(FromName, out var fromName))
+        {
+            configuration["EmailSettings:FromName"] = fromName;
+        }
+
+        if (secrets.TryGetValue(SmtpUsername, out var username))
+        {
+            configuration["EmailSettings:Username"] = username;
+        }
+
+        if (secrets.TryGetValue(SmtpPassword, out var password))
+        {
+            configuration["EmailSettings:Password"] = password;
+        }
     }
 
     private static async Task<Dictionary<string, string?>> GetAwsConfigurationSecrets(bool development,
@@ -53,17 +101,48 @@ public static class ServiceCollectionExtension
 
         var secrets = await secretsManager.GetSecrets(secretKeys);
 
-        var configuration = new Dictionary<string, string?>
+        var configuration = new Dictionary<string, string?>();
+
+        // Safely get values with null checks
+        if (secrets.ContainsKey(connectionKey))
         {
-            { Connection, secrets[connectionKey] },
-            { SmtpPassword, secrets[SmtpPassword] },
-            { SmtpPort, secrets[SmtpPort] },
-            { SmtpServer, secrets[SmtpServer] },
-            { SmtpUser, secrets[SmtpUser] },
-            { SmtpUsername, secrets[SmtpUsername] },
-            { FromEmail, secrets[FromEmail] },
-            { FromName, secrets[FromName] }
-        };
+            configuration[Connection] = secrets[connectionKey];
+        }
+
+        if (secrets.ContainsKey(SmtpPassword))
+        {
+            configuration[SmtpPassword] = secrets[SmtpPassword];
+        }
+
+        if (secrets.ContainsKey(SmtpPort))
+        {
+            configuration[SmtpPort] = secrets[SmtpPort];
+        }
+
+        if (secrets.ContainsKey(SmtpServer))
+        {
+            configuration[SmtpServer] = secrets[SmtpServer];
+        }
+
+        if (secrets.ContainsKey(SmtpUser))
+        {
+            configuration[SmtpUser] = secrets[SmtpUser];
+        }
+
+        if (secrets.ContainsKey(SmtpUsername))
+        {
+            configuration[SmtpUsername] = secrets[SmtpUsername];
+        }
+
+        if (secrets.ContainsKey(FromEmail))
+        {
+            configuration[FromEmail] = secrets[FromEmail];
+        }
+
+        if (secrets.ContainsKey(FromName))
+        {
+            configuration[FromName] = secrets[FromName];
+        }
 
         return configuration;
     }
