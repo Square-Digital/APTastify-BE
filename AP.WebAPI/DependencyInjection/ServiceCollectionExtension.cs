@@ -27,12 +27,22 @@ public static class ServiceCollectionExtension
     }
 
     public static async Task<Dictionary<string, string?>> GetAwsConfigurationSecrets(this IServiceCollection services,
-        string access, string secret,
+        string? access, string? secret,
         bool development = false)
     {
         try
         {
-            var awsSecretsManager = new APSecretsManager(access, secret);
+            APSecretsManager awsSecretsManager;
+
+            if (string.IsNullOrWhiteSpace(access) || string.IsNullOrWhiteSpace(secret))
+            {
+                awsSecretsManager = new APSecretsManager();
+            }
+            else
+            {
+                awsSecretsManager = new APSecretsManager(access, secret);
+            }
+
             var secrets = await GetAwsConfigurationSecrets(development, awsSecretsManager);
 
             var configuration = new Dictionary<string, string?>();
