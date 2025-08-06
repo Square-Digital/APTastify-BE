@@ -7,17 +7,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["APTastifyWebAPI/APTastifyWebAPI.csproj", "APTastifyWebAPI/"]
-RUN dotnet restore "APTastifyWebAPI/APTastifyWebAPI.csproj"
+COPY ["AP.WebAPI/AP.WebAPI.csproj", "AP.WebAPI/"]
+RUN dotnet restore "AP.WebAPI/AP.WebAPI.csproj"
 COPY . .
-WORKDIR "/src/APTastifyWebAPI"
-RUN dotnet build "./APTastifyWebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/AP.WebAPI"
+RUN dotnet build "./AP.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./APTastifyWebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./AP.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "APTastifyWebAPI.dll"]
+ENTRYPOINT ["dotnet", "AP.WebAPI.dll"]

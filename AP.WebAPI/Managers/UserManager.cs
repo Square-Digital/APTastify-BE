@@ -24,4 +24,9 @@ public class UserManager(UserService service) : IManager<User>
     {
         return service.Delete(id);
     }
+
+    public async Task<UserSignup> Signup(SignupRequest model)
+    {
+        return await service.Signup(model);
+    }
 }

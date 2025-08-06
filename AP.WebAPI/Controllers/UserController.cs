@@ -14,11 +14,13 @@ public class UserController(UserManager manager) : Controller, IController<User>
         var user = await manager.Get(id);
         return Ok(user);
     }
+
     [HttpGet]
     public Task<IActionResult> Get()
     {
         throw new NotImplementedException();
     }
+
     [HttpPost]
     public Task<IActionResult> Post(User value)
     {
@@ -41,5 +43,13 @@ public class UserController(UserManager manager) : Controller, IController<User>
     public Task<IActionResult> Patch(User value)
     {
         throw new NotImplementedException();
+    }
+
+    [HttpPost]
+    [Route(nameof(Signup))]
+    public async Task<IActionResult> Signup(SignupRequest model)
+    {
+        var signup = await manager.Signup(model);
+        return Ok(signup);
     }
 }
