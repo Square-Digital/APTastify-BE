@@ -17,4 +17,12 @@ public static class Constants
     public const string FromName = "from-name";
     public const string SmtpPassword = "password";
     public const string SmtpUsername = "username";
+
+    //
+
+    public const string CorsPolicy = "aptastify-cors-policy";
+
+    // Admitted URLS - CORS
+    public const string APTastifyUIALB = "http://aptastify-ui-1364817618.us-east-2.elb.amazonaws.com";
+    public const string LocalDev = "http://localhost:4200";
 }

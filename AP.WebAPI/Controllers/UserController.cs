@@ -47,7 +47,7 @@ public class UserController(UserManager manager) : Controller, IController<User>
 
     [HttpPost]
     [Route(nameof(Signup))]
-    public async Task<IActionResult> Signup(SignupRequest model)
+    public async Task<IActionResult> Signup([FromBody] SignupRequest model)
     {
         var signup = await manager.Signup(model);
         return Ok(signup);

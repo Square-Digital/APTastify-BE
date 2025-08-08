@@ -22,7 +22,8 @@ public static class ServiceCollectionExtension
         AddEmailServices(services, configuration);
         AddInternalServices(services);
         AddInternalManagers(services);
-
+        AddCors(services);
+        
         services.AddControllers();
     }
 
@@ -57,6 +58,21 @@ public static class ServiceCollectionExtension
             Console.WriteLine("Falling back to local configuration...");
             return new Dictionary<string, string?>();
         }
+    }
+
+    private static void AddCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy(CorsPolicy, policyBuilder =>
+            {
+                policyBuilder.WithOrigins(APTastifyUIALB, LocalDev)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+            });
+        });
     }
 
     private static void ConfigureSettings(this IServiceCollection services, Dictionary<string, string?> secrets,

@@ -1,5 +1,6 @@
 using AP.WebAPI.Middleware;
 using Microsoft.AspNetCore.Components;
+using static AP.WebAPI.Libs.Constants;
 
 namespace AP.WebAPI.RequestPipeline;
 
@@ -11,7 +12,7 @@ public static class WebApplicationExtensions
         app.UseSwaggerUI();
         app.UseHttpsRedirection();
         app.UseRouting();
-        // app.UseCors(Constants.CorsPolicyName);
+        app.UseCors(CorsPolicy);
         app.UseAuthentication();
         // app.UseMiddleware<PermissionMiddleware>();
         app.UseForwardedHeaders();
@@ -19,7 +20,6 @@ public static class WebApplicationExtensions
         //    app.UseAuthorization();
 
         app.MapControllers().WithMetadata(new RouteAttribute("api/[controller]"));
-
         app.Run();
     }
 }

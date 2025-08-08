@@ -29,13 +29,17 @@ public class UserService(APTastifyDatabaseContext context, IEmailService emailSe
     public async Task<UserSignup> Signup(SignupRequest model)
     {
         UserSignup userSignup;
-        
+
         // Handle database operations in transaction
+        if (string.IsNullOrWhiteSpace(model.Email)) throw new Exception("Please provide a valid email address.");
+
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             userSignup = CreateSignup(model);
+
             context.UserSignup.Add(userSignup);
+
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
         }
