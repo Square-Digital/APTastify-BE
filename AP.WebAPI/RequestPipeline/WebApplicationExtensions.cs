@@ -14,10 +14,8 @@ public static class WebApplicationExtensions
         app.UseRouting();
         app.UseCors(CorsPolicy);
         app.UseAuthentication();
-        // app.UseMiddleware<PermissionMiddleware>();
         app.UseForwardedHeaders();
         app.UseMiddleware<ExceptionHandlerMiddleware>();
-        //    app.UseAuthorization();
 
         app.MapControllers().WithMetadata(new RouteAttribute("api/[controller]"));
         app.Run();
